@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
+    libwebp-dev \
     libxml2-dev \
     libmemcached-dev \
     unzip \
@@ -19,14 +20,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libzip-dev \
     zlib1g-dev \
     libxslt-dev \
-    libsodium-dev \
-    && npm install -g yarn \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    libsodium-dev
+
+RUN npm install -g yarn \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-configure intl \
     && docker-php-ext-configure opcache --enable-opcache \
-    && docker-php-ext-install -j$(nproc) gd intl bcmath pdo_mysql zip xsl opcache mysqli soap sodium sockets \
+    && docker-php-ext-install -j$(nproc) gd intl exif bcmath pdo_mysql zip xsl opcache mysqli soap sodium sockets \
     && pecl install redis memcached xdebug \
-    && docker-php-ext-enable redis memcached \
+    && docker-php-ext-enable redis memcached exif \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
