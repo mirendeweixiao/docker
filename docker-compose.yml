@@ -1,10 +1,11 @@
 version: "3.8"
+
 services:
   nginx:
     build:
       context: ./nginx
       args:
-          NGINX_VERSION: ${NGINX_VERSION}
+        NGINX_VERSION: ${NGINX_VERSION}
     container_name: nginx
     working_dir: /var/www/html
     volumes:
@@ -12,12 +13,11 @@ services:
       - ${NGINX_CONFIG}:/etc/nginx
     restart: always
     ports:
-      - 443:443
+      - "80:80"
+      - "443:443"
     networks:
       backend:
-        ipv4_address: 172.20.0.2
-    depends_on:
-      - php-fpm
+
   php-fpm:
     build:
       context: ./php-fpm
@@ -30,41 +30,59 @@ services:
     restart: always
     networks:
       backend:
-        ipv4_address: 172.20.0.3
     depends_on:
       - mysql
+      - nginx
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 1G
+
   mysql:
     image: mysql:${MYSQL_VERSION}
     container_name: mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_ROOT_HOST=%
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - TZ=${MYSQL_TZ}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: ${MYSQL_TZ}
     ports:
-      - 3306:3306
+      - "3306:3306"
     volumes:
       - mysql:/var/lib/mysql
     restart: always
     networks:
       backend:
-        ipv4_address: 172.20.0.4
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 1G
+
   mailhog:
     image: mailhog/mailhog:latest
     container_name: mailhog
     restart: always
+    ports:
+      - "8025:8025"
     networks:
       backend:
-        ipv4_address: 172.20.0.5
+
   redis:
     image: redis:latest
     container_name: redis
     restart: always
     networks:
       backend:
-        ipv4_address: 172.20.0.6
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+
   ofelia:
     image: mcuadros/ofelia:latest
     container_name: ofelia
@@ -76,12 +94,10 @@ services:
       - ${OFELIA_CONFIG}:/etc/ofelia/config.ini
     networks:
       backend:
-        ipv4_address: 172.20.0.7
+
 volumes:
   mysql:
+
 networks:
   backend:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.0.0/16
+    driver: bridge
