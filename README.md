@@ -126,12 +126,12 @@ The `docker-compose.yml` file defines the following services:
 
 Starting the environment:
 ```
-docker-compose -p your-project-name up -d
+docker compose -p your-project-name up -d
 ```
 
 Stopping the environment:
 ```
-docker-compose -p your-project-name down
+docker compose -p your-project-name down
 ```
 
 Accessing containers (e.g., php-fpm):
@@ -192,8 +192,8 @@ Services are connected to a custom network named `backend` with predefined IP ad
 
 ## Troubleshooting
 
-1. Check Docker logs: `docker-compose -p your-project-name logs`
-2. Verify running containers: `docker-compose -p your-project-name ps`
+1. Check Docker logs: `docker compose -p your-project-name logs`
+2. Verify running containers: `docker compose -p your-project-name ps`
 3. Ensure correct paths in `.env` file
 4. Check for port conflicts
 
