@@ -57,6 +57,9 @@ copy_php_fpm_directory() {
     return
   fi
 
+  # Copy the original php-fpm directory and customize for the new PHP version
+  cp -r php-fpm "php-fpm$PHP_VERSION"
+
   echo "php-fpm directory for PHP $PHP_VERSION copied and customized successfully!"
 }
 
