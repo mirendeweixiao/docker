@@ -57,10 +57,6 @@ copy_php_fpm_directory() {
     return
   fi
 
-  # Copy the original php-fpm directory and customize for the new PHP version
-  cp -r php-fpm "php-fpm$PHP_VERSION"
-  sed -i "s/PHP_VERSION=[0-9]\+\.[0-9]\+/PHP_VERSION=$PHP_VERSION/g" php-fpm$PHP_VERSION/Dockerfile
-
   echo "php-fpm directory for PHP $PHP_VERSION copied and customized successfully!"
 }
 
@@ -89,6 +85,16 @@ validate_php_version() {
 }
 
 # Main script
+SED=sed
+unamestr=`uname`
+if [[ "$unamestr" == "Darwin" ]] ; then
+    SED=gsed
+    type $SED >/dev/null 2>&1 || {
+        echo >&2 "$SED it's not installed. Try: brew install gnu-sed" ;
+        exit 1;
+    }
+fi
+
 echo "Manage PHP versions in the Docker LNMP environment."
 echo "Options: A (Add), R (Remove)"
 read -p "Enter your choice: " ACTION
