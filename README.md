@@ -21,6 +21,9 @@ A comprehensive LNMP (Linux, Nginx, MySQL, PHP) environment with Docker for deve
     - [Redis Configuration](#redis-configuration)
     - [MailHog Configuration](#mailhog-configuration)
     - [Ofelia Configuration](#ofelia-configuration)
+  - [PHP Version Management](#php-version-management)
+    - [Script Overview](#script-overview)
+    - [Running the Script](#running-the-script)
   - [Networking](#networking)
   - [Volumes](#volumes)
   - [Troubleshooting](#troubleshooting)
@@ -181,6 +184,23 @@ MailHog uses the default configuration. The `mhsendmail_linux_amd64` binary in t
 ### Ofelia Configuration
 
 Ofelia is configured using the `config.ini` file in the root directory.
+
+## PHP Version Management
+
+This script allows you to easily manage multiple PHP versions in your Docker LNMP environment. You can add or remove PHP versions and their corresponding configurations with simple commands.
+
+### Script Overview
+
+The script provides two main functionalities:
+
+1. **Add a new PHP version**: This will copy the existing `php-fpm` configuration and create a new service(e.g., `php-fpm74`) in the `docker-compose.yml` file.
+2. **Remove an existing PHP version**: This will remove the corresponding service from `docker-compose.yml` and delete the related `php-fpm` directory.
+
+### Running the Script
+
+``` bash
+./manage-php-version.sh
+```
 
 ## Networking
 
